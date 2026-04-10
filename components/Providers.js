@@ -1,0 +1,38 @@
+'use client';
+
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+
+const AuthContext = createContext(null);
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
+export default function Providers({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  async function loadMe() {
+    try {
+      const res = await fetch('/api/auth/me');
+      if (!res.ok) {
+        setUser(null);
+        return;
+      }
+      const data = await res.json();
+      setUser(data.user || null);
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadMe();
+  }, []);
+
+  const value = useMemo(() => ({ user, setUser, loading, refresh: loadMe }), [user, loading]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
