@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
 let pool;
 
@@ -10,7 +10,8 @@ export function getPool() {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
-      connectionLimit: 10
+      connectionLimit: 10,
+      ssl: { rejectUnauthorized: true },
     });
   }
   return pool;
