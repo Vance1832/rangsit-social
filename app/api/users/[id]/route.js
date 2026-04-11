@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hasTable, query, toJSONSafe } from '@/utils/db';
+import { hasTable, query, toCountNumber, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 function getPagination(searchParams, defaultLimit = 5, maxLimit = 20) {
@@ -33,7 +33,7 @@ export async function GET(req, { params }) {
       [userId, params.id]
     );
     const postTotals = await query('SELECT COUNT(*) AS count FROM posts WHERE user_id = ?', [params.id]);
-    const totalPosts = postTotals[0]?.count || 0;
+    const totalPosts = toCountNumber(postTotals[0]?.count);
     const savedPostsAvailable = await hasTable('saved_posts');
     const savedSelect = savedPostsAvailable
       ? '(SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved'
@@ -59,8 +59,8 @@ export async function GET(req, { params }) {
     return NextResponse.json(toJSONSafe({
       user: profile,
       stats: {
-        followers: followers[0]?.count || 0,
-        following: following[0]?.count || 0,
+        followers: toCountNumber(followers[0]?.count),
+        following: toCountNumber(following[0]?.count),
         isFollowing: !!isFollowing[0]?.count
       },
       posts,
@@ -72,6 +72,7 @@ export async function GET(req, { params }) {
       }
     }));
   } catch (err) {
+    console.error('[api/users/[id]] GET failed', { id: params?.id, error: err });
     return NextResponse.json({ message: 'Failed to fetch user.' }, { status: 500 });
   }
 }

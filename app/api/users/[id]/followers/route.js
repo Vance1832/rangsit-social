@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query, toJSONSafe } from '@/utils/db';
+import { query, toCountNumber, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 function getPagination(searchParams, defaultLimit = 8, maxLimit = 20) {
@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
     const { searchParams } = new URL(req.url);
     const { page, limit, offset } = getPagination(searchParams);
     const totalRows = await query('SELECT COUNT(*) AS count FROM follows WHERE following_id = ?', [params.id]);
-    const total = totalRows[0]?.count || 0;
+    const total = toCountNumber(totalRows[0]?.count);
 
     const users = await query(
       `SELECT u.id, u.email, u.first_name, u.last_name, u.username, u.bio, u.avatar,
@@ -43,6 +43,7 @@ export async function GET(req, { params }) {
       }
     }));
   } catch (error) {
+    console.error('[api/users/[id]/followers] GET failed', { id: params?.id, error });
     return NextResponse.json({ message: 'Failed to fetch followers.' }, { status: 500 });
   }
 }

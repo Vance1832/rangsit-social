@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hasTable, query, toJSONSafe } from '@/utils/db';
+import { hasTable, query, toCountNumber, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 import { MEDIA_TYPES, saveUpload } from '@/utils/upload';
 
@@ -17,7 +17,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const { page, limit, offset } = getPagination(searchParams);
     const totalRows = await query('SELECT COUNT(*) AS count FROM posts');
-    const total = totalRows[0]?.count || 0;
+    const total = toCountNumber(totalRows[0]?.count);
     const savedPostsAvailable = await hasTable('saved_posts');
     const savedSelect = savedPostsAvailable
       ? '(SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved'
@@ -49,6 +49,7 @@ export async function GET(req) {
       }
     }));
   } catch (err) {
+    console.error('[api/posts] GET failed', err);
     return NextResponse.json({ message: 'Failed to fetch posts.' }, { status: 500 });
   }
 }
@@ -94,6 +95,7 @@ export async function POST(req) {
 
     return NextResponse.json({ id: result.insertId }, { status: 201 });
   } catch (err) {
+    console.error('[api/posts] POST failed', err);
     return NextResponse.json({ message: 'Failed to create post.' }, { status: 500 });
   }
 }

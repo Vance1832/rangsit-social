@@ -43,6 +43,18 @@ export async function hasTable(tableName) {
   }
 }
 
+export function toCountNumber(value) {
+  if (typeof value === 'bigint') {
+    return Number(value);
+  }
+
+  if (typeof value === 'string') {
+    return Number(value);
+  }
+
+  return value || 0;
+}
+
 export function toJSONSafe(data) {
   return JSON.parse(
     JSON.stringify(data, (_, value) => {

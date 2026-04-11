@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hasTable, query, toJSONSafe } from '@/utils/db';
+import { hasTable, query, toCountNumber, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 function getPagination(searchParams, defaultLimit = 5, maxLimit = 20) {
@@ -32,7 +32,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const { page, limit, offset } = getPagination(searchParams);
     const totalRows = await query('SELECT COUNT(*) AS count FROM saved_posts WHERE user_id = ?', [user.id]);
-    const total = totalRows[0]?.count || 0;
+    const total = toCountNumber(totalRows[0]?.count);
 
     const posts = await query(
       `SELECT posts.id, posts.user_id, posts.content, posts.media_url, posts.media_type, posts.created_at, posts.updated_at,
@@ -60,6 +60,7 @@ export async function GET(req) {
       }
     }));
   } catch (error) {
+    console.error('[api/saved-posts] GET failed', error);
     return NextResponse.json({ message: 'Failed to fetch saved posts.' }, { status: 500 });
   }
 }
