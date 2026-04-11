@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/utils/db';
+import { hasTable, query } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 import { MEDIA_TYPES, saveUpload } from '@/utils/upload';
 
@@ -7,17 +7,23 @@ export async function GET(req, { params }) {
   try {
     const user = await getUserFromRequest();
     const userId = user?.id || 0;
+    const savedPostsAvailable = await hasTable('saved_posts');
+    const savedSelect = savedPostsAvailable
+      ? '(SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved'
+      : '0 AS saved';
     const posts = await query(
       `SELECT posts.id, posts.user_id, posts.content, posts.media_url, posts.media_type, posts.created_at, posts.updated_at,
         users.first_name, users.last_name, users.username, users.avatar AS author_avatar,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS like_count,
         (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS comment_count,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id AND user_id = ?) AS liked,
-        (SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved
+        ${savedSelect}
       FROM posts
       JOIN users ON posts.user_id = users.id
       WHERE posts.id = ?`,
-      [userId, userId, params.id]
+      savedPostsAvailable
+        ? [userId, userId, params.id]
+        : [userId, params.id]
     );
 
     const post = posts[0];

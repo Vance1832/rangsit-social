@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/utils/db';
+import { hasTable, query } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 export async function POST(req, { params }) {
@@ -10,6 +10,10 @@ export async function POST(req, { params }) {
     }
     if (!user.profile_completed) {
       return NextResponse.json({ message: 'Complete your profile first.' }, { status: 403 });
+    }
+    const savedPostsAvailable = await hasTable('saved_posts');
+    if (!savedPostsAvailable) {
+      return NextResponse.json({ message: 'Saved posts are not enabled yet on this database.' }, { status: 503 });
     }
 
     const existing = await query('SELECT id FROM saved_posts WHERE post_id = ? AND user_id = ?', [params.id, user.id]);

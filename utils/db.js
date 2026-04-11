@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 
 let pool;
+const tableCache = new Map();
 
 export function getPool() {
   if (!pool) {
@@ -20,4 +21,24 @@ export function getPool() {
 export async function query(sql, params = []) {
   const [rows] = await getPool().execute(sql, params);
   return rows;
+}
+
+export async function hasTable(tableName) {
+  if (tableCache.has(tableName)) {
+    return tableCache.get(tableName);
+  }
+
+  try {
+    const rows = await query(
+      `SELECT COUNT(*) AS count
+       FROM information_schema.tables
+       WHERE table_schema = ? AND table_name = ?`,
+      [process.env.DB_NAME, tableName]
+    );
+    const exists = !!rows[0]?.count;
+    tableCache.set(tableName, exists);
+    return exists;
+  } catch (error) {
+    return false;
+  }
 }

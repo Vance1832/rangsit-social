@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/utils/db';
+import { hasTable, query } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 import { MEDIA_TYPES, saveUpload } from '@/utils/upload';
 
@@ -18,6 +18,10 @@ export async function GET(req) {
     const { page, limit, offset } = getPagination(searchParams);
     const totalRows = await query('SELECT COUNT(*) AS count FROM posts');
     const total = totalRows[0]?.count || 0;
+    const savedPostsAvailable = await hasTable('saved_posts');
+    const savedSelect = savedPostsAvailable
+      ? '(SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved'
+      : '0 AS saved';
 
     const paginatedPosts = await query(
       `SELECT posts.id, posts.user_id, posts.content, posts.media_url, posts.media_type, posts.created_at, posts.updated_at,
@@ -25,12 +29,14 @@ export async function GET(req) {
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS like_count,
         (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS comment_count,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id AND user_id = ?) AS liked,
-        (SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved
+        ${savedSelect}
       FROM posts
       JOIN users ON posts.user_id = users.id
       ORDER BY posts.created_at DESC
       LIMIT ? OFFSET ?`,
-      [userId, userId, limit, offset]
+      savedPostsAvailable
+        ? [userId, userId, limit, offset]
+        : [userId, limit, offset]
     );
 
     return NextResponse.json({

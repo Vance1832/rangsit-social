@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/utils/db';
+import { hasTable, query } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 function getPagination(searchParams, defaultLimit = 5, maxLimit = 20) {
@@ -14,6 +14,19 @@ export async function GET(req) {
     const user = await getUserFromRequest();
     if (!user) {
       return NextResponse.json({ message: 'Unauthorized.' }, { status: 401 });
+    }
+    const savedPostsAvailable = await hasTable('saved_posts');
+    if (!savedPostsAvailable) {
+      return NextResponse.json({
+        posts: [],
+        pagination: {
+          page: 1,
+          limit: 5,
+          total: 0,
+          hasMore: false
+        },
+        warning: 'saved_posts table is missing'
+      });
     }
 
     const { searchParams } = new URL(req.url);
