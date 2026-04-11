@@ -15,6 +15,8 @@ export async function GET(req, { params }) {
     const viewerId = viewer?.id || 0;
     const { searchParams } = new URL(req.url);
     const { page, limit, offset } = getPagination(searchParams);
+    const safeLimit = Number(limit);
+    const safeOffset = Number(offset);
     const totalRows = await query('SELECT COUNT(*) AS count FROM follows WHERE follower_id = ?', [params.id]);
     const total = toCountNumber(totalRows[0]?.count);
 
@@ -29,8 +31,8 @@ export async function GET(req, { params }) {
       JOIN users u ON u.id = f.following_id
       WHERE f.follower_id = ?
       ORDER BY u.first_name ASC, u.username ASC
-      LIMIT ? OFFSET ?`,
-      [viewerId, params.id, limit, offset]
+      LIMIT ${safeLimit} OFFSET ${safeOffset}`,
+      [viewerId, params.id]
     );
 
     return NextResponse.json(toJSONSafe({

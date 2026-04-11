@@ -38,6 +38,8 @@ export async function GET(req, { params }) {
     const savedSelect = savedPostsAvailable
       ? '(SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved'
       : '0 AS saved';
+    const safeLimit = Number(limit);
+    const safeOffset = Number(offset);
 
     const posts = await query(
       `SELECT posts.id, posts.user_id, posts.content, posts.media_url, posts.media_type, posts.created_at, posts.updated_at,
@@ -50,10 +52,10 @@ export async function GET(req, { params }) {
       JOIN users ON posts.user_id = users.id
       WHERE posts.user_id = ?
       ORDER BY posts.created_at DESC
-      LIMIT ? OFFSET ?`,
+      LIMIT ${safeLimit} OFFSET ${safeOffset}`,
       savedPostsAvailable
-        ? [userId, userId, params.id, limit, offset]
-        : [userId, params.id, limit, offset]
+        ? [userId, userId, params.id]
+        : [userId, params.id]
     );
 
     return NextResponse.json(toJSONSafe({

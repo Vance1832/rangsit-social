@@ -31,6 +31,8 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const { page, limit, offset } = getPagination(searchParams);
+    const safeLimit = Number(limit);
+    const safeOffset = Number(offset);
     const totalRows = await query('SELECT COUNT(*) AS count FROM saved_posts WHERE user_id = ?', [user.id]);
     const total = toCountNumber(totalRows[0]?.count);
 
@@ -46,8 +48,8 @@ export async function GET(req) {
       JOIN users ON posts.user_id = users.id
       WHERE saved_posts.user_id = ?
       ORDER BY saved_posts.created_at DESC
-      LIMIT ? OFFSET ?`,
-      [user.id, user.id, limit, offset]
+      LIMIT ${safeLimit} OFFSET ${safeOffset}`,
+      [user.id, user.id]
     );
 
     return NextResponse.json(toJSONSafe({
