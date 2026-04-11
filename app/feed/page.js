@@ -6,12 +6,14 @@ import RouteGuard from '@/components/RouteGuard';
 export default function FeedPage() {
   return (
     <RouteGuard requireProfile>
-      <div className="grid gap-6 xl:grid-cols-[250px_minmax(0,1fr)_310px]">
-        <aside className="hidden xl:block">
-          <LeftSidebar />
+      <div className="grid gap-6 xl:h-[calc(100vh-10.5rem)] xl:grid-cols-[260px_minmax(0,1fr)_320px] xl:overflow-hidden">
+        <aside className="hidden xl:block xl:h-full xl:overflow-y-auto xl:pr-1">
+          <div className="xl:sticky xl:top-0">
+            <LeftSidebar />
+          </div>
         </aside>
 
-        <div className="space-y-8">
+        <div className="space-y-8 xl:h-full xl:overflow-y-auto xl:pr-2">
           <div className="glass-panel overflow-hidden p-6">
             <div className="rounded-[28px] bg-gradient-to-r from-brand-900 via-brand-800 to-sky-500 p-8 text-white">
               <p className="text-xs font-semibold uppercase tracking-[0.26em] text-sky-100">Campus feed</p>
@@ -24,8 +26,10 @@ export default function FeedPage() {
           <FeedList />
         </div>
 
-        <aside className="hidden lg:block">
-          <RightSidebar />
+        <aside className="hidden lg:block xl:h-full xl:overflow-y-auto xl:pl-1">
+          <div className="xl:sticky xl:top-0">
+            <RightSidebar />
+          </div>
         </aside>
       </div>
     </RouteGuard>

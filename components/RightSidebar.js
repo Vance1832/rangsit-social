@@ -7,6 +7,7 @@ import { useAuth } from './Providers';
 import FollowButton from './FollowButton';
 
 const trends = ['#RangsitLife', '#CampusEvents', '#StudySession', '#StudentCreators', '#RsuUpdates'];
+const activity = ['New follows this week', 'Comments on your recent post', 'Student event signups rising'];
 
 function displayName(user) {
   const full = [user.first_name, user.last_name].filter(Boolean).join(' ');
@@ -111,6 +112,18 @@ export default function RightSidebar() {
             <p className="text-lg font-semibold text-slate-950">{stats.following}</p>
             <p className="mt-1 text-xs text-slate-500">Following</p>
           </div>
+        </div>
+      </section>
+
+      <section className="sidebar-card">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Recent activity</h2>
+        <div className="mt-4 space-y-3">
+          {activity.map((item) => (
+            <div key={item} className="rounded-2xl bg-slate-50 px-4 py-3">
+              <p className="text-sm font-medium text-slate-800">{item}</p>
+              <p className="mt-1 text-xs text-slate-500">Stay aware of movement around your network.</p>
+            </div>
+          ))}
         </div>
       </section>
     </div>

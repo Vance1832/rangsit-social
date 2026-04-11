@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import BrandLogo from './BrandLogo';
 
-export default function AuthForm({ type, onSubmit }) {
+export default function AuthForm({ type, onSubmit, footer }) {
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,19 +25,16 @@ export default function AuthForm({ type, onSubmit }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass-panel mx-auto max-w-md space-y-5 p-8">
-      <div className="space-y-4">
-        <BrandLogo compact />
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
-            {type === 'signup' ? 'Create your account' : 'Welcome back'}
-          </h1>
-          <p className="mt-2 text-sm text-slate-500">
+    <form onSubmit={handleSubmit} className="glass-panel mx-auto w-full max-w-md space-y-5 p-8">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
+          {type === 'signup' ? 'Create your account' : 'Welcome back'}
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
           {type === 'signup'
-            ? 'Create your account and complete your profile to join.'
-            : 'Log in to continue connecting with Rangsit Social.'}
-          </p>
-        </div>
+            ? 'Start with your account, then finish onboarding to join the campus network.'
+            : 'Log in to continue posting, following, and connecting across Rangsit Social.'}
+        </p>
       </div>
 
       <div>
@@ -68,6 +64,8 @@ export default function AuthForm({ type, onSubmit }) {
       <button className="btn btn-primary w-full" disabled={loading}>
         {loading ? 'Please wait...' : type === 'signup' ? 'Sign up' : 'Log in'}
       </button>
+
+      {footer ? <div className="border-t border-slate-100 pt-4">{footer}</div> : null}
     </form>
   );
 }

@@ -59,6 +59,31 @@ export default function LeftSidebar() {
           ) : null}
         </div>
       </section>
+
+      <section className="sidebar-card">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Campus spaces</h2>
+        <div className="mt-4 space-y-2">
+          {['Student clubs', 'Creative showcase', 'Study groups', 'Events board'].map((item) => (
+            <div key={item} className="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
+              {item}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="sidebar-card">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Saved & planning</h2>
+        <div className="mt-4 grid gap-3">
+          <div className="rounded-2xl bg-brand-50 px-4 py-3">
+            <p className="text-sm font-semibold text-brand-800">Bookmarks</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">Keep posts and ideas you want to revisit.</p>
+          </div>
+          <div className="rounded-2xl bg-slate-50 px-4 py-3">
+            <p className="text-sm font-semibold text-slate-800">Upcoming events</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">Quick access to student activities and club news.</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
