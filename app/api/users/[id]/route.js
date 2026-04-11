@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hasTable, query } from '@/utils/db';
+import { hasTable, query, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 function getPagination(searchParams, defaultLimit = 5, maxLimit = 20) {
@@ -56,7 +56,7 @@ export async function GET(req, { params }) {
         : [userId, params.id, limit, offset]
     );
 
-    return NextResponse.json({
+    return NextResponse.json(toJSONSafe({
       user: profile,
       stats: {
         followers: followers[0]?.count || 0,
@@ -70,7 +70,7 @@ export async function GET(req, { params }) {
         total: totalPosts,
         hasMore: offset + posts.length < totalPosts
       }
-    });
+    }));
   } catch (err) {
     return NextResponse.json({ message: 'Failed to fetch user.' }, { status: 500 });
   }

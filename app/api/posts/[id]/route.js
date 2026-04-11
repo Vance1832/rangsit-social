@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hasTable, query } from '@/utils/db';
+import { hasTable, query, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 import { MEDIA_TYPES, saveUpload } from '@/utils/upload';
 
@@ -31,7 +31,7 @@ export async function GET(req, { params }) {
       return NextResponse.json({ message: 'Post not found.' }, { status: 404 });
     }
 
-    return NextResponse.json({ post });
+    return NextResponse.json(toJSONSafe({ post }));
   } catch (err) {
     return NextResponse.json({ message: 'Failed to fetch post.' }, { status: 500 });
   }

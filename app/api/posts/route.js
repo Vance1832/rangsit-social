@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hasTable, query } from '@/utils/db';
+import { hasTable, query, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 import { MEDIA_TYPES, saveUpload } from '@/utils/upload';
 
@@ -39,7 +39,7 @@ export async function GET(req) {
         : [userId, limit, offset]
     );
 
-    return NextResponse.json({
+    return NextResponse.json(toJSONSafe({
       posts: paginatedPosts,
       pagination: {
         page,
@@ -47,7 +47,7 @@ export async function GET(req) {
         total,
         hasMore: offset + paginatedPosts.length < total
       }
-    });
+    }));
   } catch (err) {
     return NextResponse.json({ message: 'Failed to fetch posts.' }, { status: 500 });
   }

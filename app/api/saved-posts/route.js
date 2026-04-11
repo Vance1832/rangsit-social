@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hasTable, query } from '@/utils/db';
+import { hasTable, query, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 function getPagination(searchParams, defaultLimit = 5, maxLimit = 20) {
@@ -17,7 +17,7 @@ export async function GET(req) {
     }
     const savedPostsAvailable = await hasTable('saved_posts');
     if (!savedPostsAvailable) {
-      return NextResponse.json({
+      return NextResponse.json(toJSONSafe({
         posts: [],
         pagination: {
           page: 1,
@@ -26,7 +26,7 @@ export async function GET(req) {
           hasMore: false
         },
         warning: 'saved_posts table is missing'
-      });
+      }));
     }
 
     const { searchParams } = new URL(req.url);
@@ -50,7 +50,7 @@ export async function GET(req) {
       [user.id, user.id, limit, offset]
     );
 
-    return NextResponse.json({
+    return NextResponse.json(toJSONSafe({
       posts,
       pagination: {
         page,
@@ -58,7 +58,7 @@ export async function GET(req) {
         total,
         hasMore: offset + posts.length < total
       }
-    });
+    }));
   } catch (error) {
     return NextResponse.json({ message: 'Failed to fetch saved posts.' }, { status: 500 });
   }

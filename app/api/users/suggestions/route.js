@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/utils/db';
+import { query, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 export async function GET() {
@@ -29,7 +29,7 @@ export async function GET() {
       [viewer.id, viewer.id]
     );
 
-    return NextResponse.json({ users });
+    return NextResponse.json(toJSONSafe({ users }));
   } catch (error) {
     return NextResponse.json({ message: 'Failed to fetch suggestions.' }, { status: 500 });
   }

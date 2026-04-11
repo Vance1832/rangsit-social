@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/utils/db';
+import { query, toJSONSafe } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 
 function getPagination(searchParams, defaultLimit = 8, maxLimit = 20) {
@@ -33,7 +33,7 @@ export async function GET(req, { params }) {
       [viewerId, params.id, limit, offset]
     );
 
-    return NextResponse.json({
+    return NextResponse.json(toJSONSafe({
       users,
       pagination: {
         page,
@@ -41,7 +41,7 @@ export async function GET(req, { params }) {
         total,
         hasMore: offset + users.length < total
       }
-    });
+    }));
   } catch (error) {
     return NextResponse.json({ message: 'Failed to fetch followers.' }, { status: 500 });
   }

@@ -42,3 +42,14 @@ export async function hasTable(tableName) {
     return false;
   }
 }
+
+export function toJSONSafe(data) {
+  return JSON.parse(
+    JSON.stringify(data, (_, value) => {
+      if (typeof value === 'bigint') {
+        return Number(value);
+      }
+      return value;
+    })
+  );
+}
