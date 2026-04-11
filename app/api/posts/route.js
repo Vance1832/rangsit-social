@@ -3,23 +3,45 @@ import { query } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 import { MEDIA_TYPES, saveUpload } from '@/utils/upload';
 
-export async function GET() {
+function getPagination(searchParams, defaultLimit = 5, maxLimit = 20) {
+  const page = Math.max(1, Number(searchParams.get('page')) || 1);
+  const limit = Math.min(maxLimit, Math.max(1, Number(searchParams.get('limit')) || defaultLimit));
+  const offset = (page - 1) * limit;
+  return { page, limit, offset };
+}
+
+export async function GET(req) {
   try {
     const user = await getUserFromRequest();
     const userId = user?.id || 0;
-    const posts = await query(
+    const { searchParams } = new URL(req.url);
+    const { page, limit, offset } = getPagination(searchParams);
+    const totalRows = await query('SELECT COUNT(*) AS count FROM posts');
+    const total = totalRows[0]?.count || 0;
+
+    const paginatedPosts = await query(
       `SELECT posts.id, posts.user_id, posts.content, posts.media_url, posts.media_type, posts.created_at, posts.updated_at,
         users.first_name, users.last_name, users.username, users.avatar AS author_avatar,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS like_count,
         (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS comment_count,
-        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id AND user_id = ?) AS liked
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id AND user_id = ?) AS liked,
+        (SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved
       FROM posts
       JOIN users ON posts.user_id = users.id
-      ORDER BY posts.created_at DESC`,
-      [userId]
+      ORDER BY posts.created_at DESC
+      LIMIT ? OFFSET ?`,
+      [userId, userId, limit, offset]
     );
 
-    return NextResponse.json({ posts });
+    return NextResponse.json({
+      posts: paginatedPosts,
+      pagination: {
+        page,
+        limit,
+        total,
+        hasMore: offset + paginatedPosts.length < total
+      }
+    });
   } catch (err) {
     return NextResponse.json({ message: 'Failed to fetch posts.' }, { status: 500 });
   }
@@ -36,13 +58,16 @@ export async function POST(req) {
     }
 
     const formData = await req.formData();
-    const content = formData.get('content');
+    const content = (formData.get('content') || '').trim();
     const mediaUrlInput = formData.get('mediaUrl');
     const mediaTypeInput = formData.get('mediaType');
     const mediaFile = formData.get('media');
 
     if (!content) {
       return NextResponse.json({ message: 'Post content is required.' }, { status: 400 });
+    }
+    if (content.length > 5000) {
+      return NextResponse.json({ message: 'Post content must be 5000 characters or fewer.' }, { status: 400 });
     }
 
     let mediaUrl = mediaUrlInput || null;

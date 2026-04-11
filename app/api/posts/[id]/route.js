@@ -12,11 +12,12 @@ export async function GET(req, { params }) {
         users.first_name, users.last_name, users.username, users.avatar AS author_avatar,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS like_count,
         (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS comment_count,
-        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id AND user_id = ?) AS liked
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id AND user_id = ?) AS liked,
+        (SELECT COUNT(*) FROM saved_posts WHERE post_id = posts.id AND user_id = ?) AS saved
       FROM posts
       JOIN users ON posts.user_id = users.id
       WHERE posts.id = ?`,
-      [userId, params.id]
+      [userId, userId, params.id]
     );
 
     const post = posts[0];
@@ -50,7 +51,7 @@ export async function PUT(req, { params }) {
     }
 
     const formData = await req.formData();
-    const content = formData.get('content');
+    const content = (formData.get('content') || '').trim();
     const mediaUrlInput = formData.get('mediaUrl');
     const mediaTypeInput = formData.get('mediaType');
     const mediaFile = formData.get('media');
@@ -58,6 +59,9 @@ export async function PUT(req, { params }) {
 
     if (!content) {
       return NextResponse.json({ message: 'Post content is required.' }, { status: 400 });
+    }
+    if (content.length > 5000) {
+      return NextResponse.json({ message: 'Post content must be 5000 characters or fewer.' }, { status: 400 });
     }
 
     let mediaUrl = post.media_url;

@@ -9,6 +9,12 @@ export async function POST(req) {
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required.' }, { status: 400 });
     }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return NextResponse.json({ message: 'Enter a valid email address.' }, { status: 400 });
+    }
+    if (password.length < 6) {
+      return NextResponse.json({ message: 'Password must be at least 6 characters.' }, { status: 400 });
+    }
 
     const existing = await query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length) {

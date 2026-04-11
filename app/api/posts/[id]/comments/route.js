@@ -29,9 +29,13 @@ export async function POST(req, { params }) {
       return NextResponse.json({ message: 'Complete your profile first.' }, { status: 403 });
     }
 
-    const { content } = await req.json();
+    const { content: rawContent } = await req.json();
+    const content = (rawContent || '').trim();
     if (!content) {
       return NextResponse.json({ message: 'Comment content is required.' }, { status: 400 });
+    }
+    if (content.length > 300) {
+      return NextResponse.json({ message: 'Comment must be 300 characters or fewer.' }, { status: 400 });
     }
 
     const result = await query(

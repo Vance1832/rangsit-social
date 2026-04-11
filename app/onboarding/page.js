@@ -34,6 +34,18 @@ export default function OnboardingPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  function validateForm() {
+    if (!form.firstName.trim()) return 'First name is required.';
+    if (!form.lastName.trim()) return 'Last name is required.';
+    if (!/^[a-zA-Z0-9._]{3,30}$/.test(form.username.trim())) {
+      return 'Username must be 3-30 characters and use only letters, numbers, dots, or underscores.';
+    }
+    if (!form.birthday) return 'Birthday is required.';
+    if (form.bio.length > 255) return 'Bio must be 255 characters or fewer.';
+    if (!avatarFile) return 'Profile image is required.';
+    return '';
+  }
+
   function handleFileChange(e) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -47,6 +59,11 @@ export default function OnboardingPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setLoading(true);
     setError('');
 

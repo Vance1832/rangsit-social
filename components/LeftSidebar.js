@@ -52,6 +52,9 @@ export default function LeftSidebar() {
           <Link href={`/profile/${user.id}`} className="rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-brand-50 hover:text-brand-700">
             My profile
           </Link>
+          <Link href="/saved" className="rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-brand-50 hover:text-brand-700">
+            Saved posts
+          </Link>
           {!user.profile_completed ? (
             <Link href="/onboarding" className="rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-brand-50 hover:text-brand-700">
               Complete onboarding

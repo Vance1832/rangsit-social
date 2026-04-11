@@ -9,6 +9,9 @@ export async function POST(req) {
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required.' }, { status: 400 });
     }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return NextResponse.json({ message: 'Enter a valid email address.' }, { status: 400 });
+    }
 
     const users = await query('SELECT * FROM users WHERE email = ?', [email]);
     const user = users[0];

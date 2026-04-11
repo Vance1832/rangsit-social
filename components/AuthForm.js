@@ -11,14 +11,28 @@ export default function AuthForm({ type, onSubmit, footer }) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  function validateForm() {
+    const email = form.email.trim();
+    if (!email) return 'Email is required.';
+    if (!/^\S+@\S+\.\S+$/.test(email)) return 'Enter a valid email address.';
+    if (!form.password) return 'Password is required.';
+    if (form.password.length < 6) return 'Password must be at least 6 characters.';
+    return '';
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setLoading(true);
     setError('');
     try {
-      await onSubmit(form);
+      await onSubmit({ email: form.email.trim(), password: form.password });
     } catch (err) {
-      setError('Please check your details and try again.');
+      setError(err.message || 'Please check your details and try again.');
     } finally {
       setLoading(false);
     }

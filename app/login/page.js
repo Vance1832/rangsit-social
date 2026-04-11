@@ -20,12 +20,16 @@ export default function LoginPage() {
       const data = await res.json();
       setUser(data.user);
       if (data.user.profile_completed) {
-        router.push('/feed');
+        const nextPath = typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search).get('next')
+          : null;
+        router.push(nextPath || '/feed');
       } else {
         router.push('/onboarding');
       }
     } else {
-      throw new Error('Login failed');
+      const data = await res.json();
+      throw new Error(data.message || 'Login failed');
     }
   }
 

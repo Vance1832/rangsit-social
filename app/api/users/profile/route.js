@@ -3,7 +3,7 @@ import { query } from '@/utils/db';
 import { getUserFromRequest } from '@/utils/auth';
 import { IMAGE_TYPES, saveUpload } from '@/utils/upload';
 
-export async function POST(req) {
+export async function PUT(req) {
   try {
     const user = await getUserFromRequest();
     if (!user) {
@@ -11,39 +11,34 @@ export async function POST(req) {
     }
 
     const formData = await req.formData();
-    const firstName = formData.get('firstName');
-    const lastName = formData.get('lastName');
-    const username = formData.get('username');
+    const firstName = (formData.get('firstName') || '').trim();
+    const lastName = (formData.get('lastName') || '').trim();
+    const username = (formData.get('username') || '').trim();
     const birthday = formData.get('birthday');
-    const bio = formData.get('bio') || '';
+    const bio = (formData.get('bio') || '').trim();
     const avatarUrl = formData.get('avatarUrl');
     const avatarFile = formData.get('avatar');
 
     if (!firstName || !lastName || !username || !birthday) {
-      return NextResponse.json({ message: 'All fields are required.' }, { status: 400 });
+      return NextResponse.json({ message: 'First name, last name, username, and birthday are required.' }, { status: 400 });
     }
+
     if (bio.length > 255) {
       return NextResponse.json({ message: 'Bio must be 255 characters or fewer.' }, { status: 400 });
     }
+
     if (!/^[a-zA-Z0-9._]{3,30}$/.test(username)) {
       return NextResponse.json({ message: 'Username must be 3-30 characters and use only letters, numbers, dots, or underscores.' }, { status: 400 });
     }
 
-    if (!avatarUrl && (!avatarFile || typeof avatarFile === 'string')) {
-      return NextResponse.json({ message: 'Profile image is required.' }, { status: 400 });
-    }
-
-    const existing = await query('SELECT id FROM users WHERE username = ? AND id != ?', [
-      username,
-      user.id
-    ]);
+    const existing = await query('SELECT id FROM users WHERE username = ? AND id != ?', [username, user.id]);
     if (existing.length) {
       return NextResponse.json({ message: 'Username already taken.' }, { status: 409 });
     }
 
-    let finalAvatarUrl = avatarUrl;
+    let finalAvatarUrl = avatarUrl || user.avatar || '';
 
-    if (!finalAvatarUrl && avatarFile && typeof avatarFile !== 'string') {
+    if (!avatarUrl && avatarFile && typeof avatarFile !== 'string') {
       const upload = await saveUpload(avatarFile, IMAGE_TYPES, {
         folder: 'rangsit-social/profile-images',
         resourceType: 'image'
@@ -53,13 +48,13 @@ export async function POST(req) {
 
     await query(
       `UPDATE users
-       SET first_name = ?, last_name = ?, username = ?, birthday = ?, bio = ?, avatar = ?, profile_completed = 1
+       SET first_name = ?, last_name = ?, username = ?, birthday = ?, bio = ?, avatar = ?
        WHERE id = ?`,
       [firstName, lastName, username, birthday, bio, finalAvatarUrl, user.id]
     );
 
-    return NextResponse.json({ message: 'Profile completed.' });
-  } catch (err) {
-    return NextResponse.json({ message: 'Failed to complete onboarding.' }, { status: 500 });
+    return NextResponse.json({ message: 'Profile updated.' });
+  } catch (error) {
+    return NextResponse.json({ message: 'Failed to update profile.' }, { status: 500 });
   }
 }

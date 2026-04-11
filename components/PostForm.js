@@ -43,13 +43,24 @@ export default function PostForm({ initial = { content: '', media_url: null, med
     setRemoveMedia(true);
   }
 
+  function validateForm() {
+    if (!content.trim()) return 'Post content is required.';
+    if (content.trim().length > 5000) return 'Post content must be 5000 characters or fewer.';
+    return '';
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setLoading(true);
     setError('');
     try {
       const payload = new FormData();
-      payload.append('content', content);
+      payload.append('content', content.trim());
       if (removeMedia) payload.append('removeMedia', 'true');
 
       if (mediaFile) {
@@ -60,7 +71,7 @@ export default function PostForm({ initial = { content: '', media_url: null, med
 
       await onSubmit(payload);
     } catch (err) {
-      setError('Something went wrong.');
+      setError(err.message || 'Something went wrong.');
     } finally {
       setLoading(false);
     }

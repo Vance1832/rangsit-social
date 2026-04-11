@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from './Providers';
 import { formatDate } from '@/utils/format';
 import LikeButton from './LikeButton';
+import SaveButton from './SaveButton';
 
 function displayName(post) {
   const full = [post.first_name, post.last_name].filter(Boolean).join(' ');
@@ -89,6 +90,7 @@ export default function PostCard({ post, onDeleted, showActions = true }) {
             <span>Comment</span>
             <span className="text-xs text-slate-400">{post.comment_count}</span>
           </Link>
+          <SaveButton postId={post.id} initialSaved={!!post.saved} />
         </div>
 
         {showActions && user?.id === post.user_id && (

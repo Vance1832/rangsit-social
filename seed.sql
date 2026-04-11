@@ -23,6 +23,11 @@ INSERT INTO likes (post_id, user_id, created_at) VALUES
 (3, 4, NOW() - INTERVAL 10 HOUR),
 (4, 1, NOW() - INTERVAL 3 HOUR);
 
+INSERT INTO saved_posts (user_id, post_id, created_at) VALUES
+(1, 3, NOW() - INTERVAL 12 HOUR),
+(2, 1, NOW() - INTERVAL 1 DAY),
+(3, 4, NOW() - INTERVAL 3 HOUR);
+
 INSERT INTO follows (follower_id, following_id, created_at) VALUES
 (2, 1, NOW() - INTERVAL 5 DAY),
 (3, 1, NOW() - INTERVAL 4 DAY),

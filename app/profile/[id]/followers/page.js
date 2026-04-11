@@ -13,11 +13,14 @@ export default function FollowersPage() {
   const [users, setUsers] = useState([]);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       const [usersRes, profileRes] = await Promise.all([
-        fetch(`/api/users/${params.id}/followers`),
+        fetch(`/api/users/${params.id}/followers?page=1&limit=8`),
         fetch(`/api/users/${params.id}`)
       ]);
 
@@ -25,12 +28,25 @@ export default function FollowersPage() {
       const profileData = await profileRes.json();
 
       setUsers(usersData.users || []);
+      setHasMore(!!usersData.pagination?.hasMore);
+      setPage(1);
       setProfile(profileData.user || null);
       setLoading(false);
     }
 
     loadData();
   }, [params.id]);
+
+  async function handleLoadMore() {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    const res = await fetch(`/api/users/${params.id}/followers?page=${nextPage}&limit=8`);
+    const data = await res.json();
+    setUsers((prev) => [...prev, ...(data.users || [])]);
+    setHasMore(!!data.pagination?.hasMore);
+    setPage(nextPage);
+    setLoadingMore(false);
+  }
 
   if (loading) return <Loading label="Loading followers..." />;
 
@@ -55,6 +71,13 @@ export default function FollowersPage() {
             {users.map((user) => (
               <UserListItem key={user.id} user={user} />
             ))}
+            {hasMore ? (
+              <div className="flex justify-center pt-2">
+                <button onClick={handleLoadMore} disabled={loadingMore} className="btn btn-outline">
+                  {loadingMore ? 'Loading...' : 'Load more'}
+                </button>
+              </div>
+            ) : null}
           </div>
         ) : (
           <EmptyState title="No followers yet" description="This user has not built a follower list yet." />

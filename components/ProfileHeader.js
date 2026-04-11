@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAuth } from './Providers';
 import FollowButton from './FollowButton';
 import { formatDateOnly } from '@/utils/format';
 
@@ -11,6 +12,9 @@ function displayName(user) {
 }
 
 export default function ProfileHeader({ user, stats }) {
+  const { user: currentUser } = useAuth();
+  const isOwnProfile = currentUser?.id === user.id;
+
   return (
     <div className="glass-panel overflow-hidden p-6">
       <div className="rounded-[28px] bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 p-6 text-white shadow-inner">
@@ -37,7 +41,13 @@ export default function ProfileHeader({ user, stats }) {
               </p>
             </div>
           </div>
-          <FollowButton targetId={user.id} initialFollowing={stats.isFollowing} />
+          {isOwnProfile ? (
+            <Link href="/profile/edit" className="btn btn-outline">
+              Edit profile
+            </Link>
+          ) : (
+            <FollowButton targetId={user.id} initialFollowing={stats.isFollowing} />
+          )}
         </div>
       </div>
       <div className="grid gap-4 px-2 pt-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
