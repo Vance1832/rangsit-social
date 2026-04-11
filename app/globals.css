@@ -4,24 +4,24 @@
 
 :root {
   color-scheme: light;
-  --bg: #f3f6fb;
-  --surface: rgba(255, 255, 255, 0.82);
-  --surface-strong: #ffffff;
+  --bg: #eef4fa;
+  --surface: rgba(251, 253, 255, 0.88);
+  --surface-strong: #f9fbfe;
   --text: #0f172a;
   --muted: #64748b;
   --line: rgba(148, 163, 184, 0.24);
-  --brand-navy: #0f172a;
-  --brand-indigo: #3730a3;
-  --brand-cyan: #0891b2;
-  --brand-pink: #db2777;
+  --brand-primary: #0077c8;
+  --brand-secondary: #29a8e0;
+  --brand-primary-dark: #0b5ea8;
+  --brand-bg: #eaf3fb;
 }
 
 html {
   min-height: 100%;
   background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 28%),
-    radial-gradient(circle at top right, rgba(217, 70, 239, 0.08), transparent 24%),
-    linear-gradient(180deg, #eef4ff 0%, #f8fafc 48%, #eff4fb 100%);
+    radial-gradient(circle at top left, rgba(0, 119, 200, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(41, 168, 224, 0.12), transparent 24%),
+    linear-gradient(180deg, #edf4fb 0%, #f5f8fc 48%, #edf3f9 100%);
 }
 
 body {
@@ -43,11 +43,11 @@ body {
 }
 
 .btn-primary {
-  @apply bg-gradient-to-r from-indigo-700 via-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-950/20 hover:shadow-xl hover:shadow-indigo-950/25;
+  @apply bg-gradient-to-r from-brand-800 via-brand-700 to-sky-500 text-white shadow-lg shadow-brand-900/20 hover:brightness-105;
 }
 
 .btn-outline {
-  @apply border border-slate-200/80 bg-white/85 text-slate-700 backdrop-blur hover:border-indigo-300 hover:text-indigo-700;
+  @apply border border-slate-200/80 bg-white/85 text-slate-700 backdrop-blur hover:border-brand-300 hover:text-brand-700;
 }
 
 .card {
@@ -55,15 +55,15 @@ body {
 }
 
 .input {
-  @apply w-full rounded-2xl border border-slate-200/90 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-200;
+  @apply w-full rounded-2xl border border-slate-200/90 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-200;
 }
 
 .textarea {
-  @apply min-h-[120px] w-full rounded-2xl border border-slate-200/90 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-200;
+  @apply min-h-[120px] w-full rounded-2xl border border-slate-200/90 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-200;
 }
 
 .badge {
-  @apply inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700;
+  @apply inline-flex items-center gap-1 rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700;
 }
 
 .glass-panel {
@@ -71,9 +71,21 @@ body {
 }
 
 .metric-link {
-  @apply inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-indigo-300 hover:text-indigo-700;
+  @apply inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-brand-300 hover:text-brand-700;
 }
 
 .section-title {
   @apply text-xl font-semibold tracking-tight text-slate-950;
+}
+
+.sidebar-card {
+  @apply rounded-[28px] border border-white/70 bg-[rgba(249,251,254,0.92)] p-5 shadow-[0_16px_36px_rgba(15,23,42,0.06)];
+}
+
+.nav-pill-active {
+  @apply rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white;
+}
+
+.nav-pill {
+  @apply rounded-full px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white;
 }

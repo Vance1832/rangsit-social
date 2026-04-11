@@ -27,24 +27,24 @@ export default function PostCard({ post, onDeleted, showActions = true }) {
   }
 
   return (
-    <article className="group overflow-hidden rounded-[30px] border border-white/70 bg-white/85 p-6 shadow-[0_24px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_28px_70px_rgba(15,23,42,0.12)]">
+    <article className="overflow-hidden rounded-[30px] border border-white/70 bg-[rgba(249,251,254,0.95)] p-6 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
-        {post.author_avatar ? (
-          <Image
-            src={post.author_avatar}
-            alt={displayName(post)}
-            width={40}
-            height={40}
-            className="h-10 w-10 rounded-full object-cover"
-          />
-        ) : (
-          <div className="h-10 w-10 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-semibold">
-            {displayName(post).slice(0, 1).toUpperCase()}
-          </div>
-        )}
+          {post.author_avatar ? (
+            <Image
+              src={post.author_avatar}
+              alt={displayName(post)}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+              {displayName(post).slice(0, 1).toUpperCase()}
+            </div>
+          )}
           <div className="min-w-0">
-            <Link href={`/profile/${post.user_id}`} className="truncate font-semibold text-slate-950 hover:text-indigo-700">
+            <Link href={`/profile/${post.user_id}`} className="truncate font-semibold text-slate-950 hover:text-brand-700">
               {displayName(post)}
             </Link>
             <p className="truncate text-xs uppercase tracking-[0.2em] text-slate-400">{formatDate(post.created_at)}</p>
@@ -64,7 +64,7 @@ export default function PostCard({ post, onDeleted, showActions = true }) {
             alt="Post media"
             width={1200}
             height={900}
-            className="max-h-[30rem] w-full object-cover transition duration-300 group-hover:scale-[1.01]"
+            className="max-h-[30rem] w-full object-cover"
           />
         </div>
       )}
@@ -84,7 +84,7 @@ export default function PostCard({ post, onDeleted, showActions = true }) {
           <LikeButton postId={post.id} initialLiked={!!post.liked} initialCount={post.like_count} />
           <Link
             href={`/posts/${post.id}`}
-            className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-indigo-700"
+            className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-brand-700"
           >
             <span>Comment</span>
             <span className="text-xs text-slate-400">{post.comment_count}</span>
@@ -93,7 +93,7 @@ export default function PostCard({ post, onDeleted, showActions = true }) {
 
         {showActions && user?.id === post.user_id && (
           <div className="flex items-center gap-3 text-sm">
-            <Link href={`/posts/${post.id}/edit`} className="font-medium text-slate-500 hover:text-indigo-700">Edit</Link>
+            <Link href={`/posts/${post.id}/edit`} className="font-medium text-slate-500 hover:text-brand-700">Edit</Link>
             <button onClick={handleDelete} className="text-rose-500 hover:text-rose-600">Delete</button>
           </div>
         )}
