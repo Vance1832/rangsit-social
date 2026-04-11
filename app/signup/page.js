@@ -1,12 +1,20 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AuthForm from '@/components/AuthForm';
 import BrandLogo from '@/components/BrandLogo';
+import { useAuth } from '@/components/Providers';
 
 export default function SignupPage() {
   const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (loading || !user) return;
+    router.replace(user.profile_completed ? '/feed' : '/onboarding');
+  }, [user, loading, router]);
 
   async function handleSignup(form) {
     const res = await fetch('/api/auth/signup', {
@@ -23,7 +31,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-10rem)] gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] lg:items-center">
+    <div className="grid min-h-[calc(100vh-9rem)] gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)] lg:items-center xl:gap-8">
       <section className="glass-panel overflow-hidden p-0">
         <div className="bg-gradient-to-br from-slate-950 via-brand-900 to-sky-500 p-8 text-white md:p-12">
           <BrandLogo dark />

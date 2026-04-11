@@ -14,7 +14,10 @@ export default function Providers({ children }) {
 
   async function loadMe() {
     try {
-      const res = await fetch('/api/auth/me');
+      const res = await fetch('/api/auth/me', {
+        cache: 'no-store',
+        credentials: 'include'
+      });
       if (!res.ok) {
         setUser(null);
         return;

@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
             <Navbar />
-            <main className="container py-8">{children}</main>
+            <main className="container py-6 md:py-8">{children}</main>
           </div>
         </Providers>
       </body>

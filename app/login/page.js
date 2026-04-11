@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AuthForm from '@/components/AuthForm';
@@ -8,25 +9,41 @@ import { useAuth } from '@/components/Providers';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { user, loading, setUser, refresh } = useAuth();
+
+  useEffect(() => {
+    if (loading || !user) return;
+
+    if (user.profile_completed) {
+      const nextPath = typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('next')
+        : null;
+      router.replace(nextPath || '/feed');
+    } else {
+      router.replace('/onboarding');
+    }
+  }, [user, loading, router]);
 
   async function handleLogin(form) {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ email: form.email, password: form.password })
     });
     if (res.ok) {
       const data = await res.json();
       setUser(data.user);
+      await refresh();
       if (data.user.profile_completed) {
         const nextPath = typeof window !== 'undefined'
           ? new URLSearchParams(window.location.search).get('next')
           : null;
-        router.push(nextPath || '/feed');
+        router.replace(nextPath || '/feed');
       } else {
-        router.push('/onboarding');
+        router.replace('/onboarding');
       }
+      router.refresh();
     } else {
       const data = await res.json();
       throw new Error(data.message || 'Login failed');
@@ -34,7 +51,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-10rem)] gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] lg:items-center">
+    <div className="grid min-h-[calc(100vh-9rem)] gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)] lg:items-center xl:gap-8">
       <section className="glass-panel overflow-hidden p-0">
         <div className="bg-gradient-to-br from-brand-900 via-brand-800 to-sky-500 p-8 text-white md:p-12">
           <BrandLogo dark />
