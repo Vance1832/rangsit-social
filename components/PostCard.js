@@ -27,8 +27,9 @@ export default function PostCard({ post, onDeleted, showActions = true }) {
   }
 
   return (
-    <article className="card p-6">
-      <div className="flex items-center gap-3">
+    <article className="group overflow-hidden rounded-[30px] border border-white/70 bg-white/85 p-6 shadow-[0_24px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_28px_70px_rgba(15,23,42,0.12)]">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-3">
         {post.author_avatar ? (
           <Image
             src={post.author_avatar}
@@ -42,45 +43,57 @@ export default function PostCard({ post, onDeleted, showActions = true }) {
             {displayName(post).slice(0, 1).toUpperCase()}
           </div>
         )}
-        <div>
-          <Link href={`/profile/${post.user_id}`} className="font-semibold hover:text-brand-600">
-            {displayName(post)}
-          </Link>
-          <p className="text-xs text-slate-500">{formatDate(post.created_at)}</p>
+          <div className="min-w-0">
+            <Link href={`/profile/${post.user_id}`} className="truncate font-semibold text-slate-950 hover:text-indigo-700">
+              {displayName(post)}
+            </Link>
+            <p className="truncate text-xs uppercase tracking-[0.2em] text-slate-400">{formatDate(post.created_at)}</p>
+          </div>
         </div>
+        {post.media_type ? (
+          <span className="badge shrink-0">{post.media_type === 'video' ? 'Video post' : 'Image post'}</span>
+        ) : null}
       </div>
 
-      <p className="mt-4 text-slate-800 leading-relaxed whitespace-pre-line">{post.content}</p>
+      <p className="mt-5 whitespace-pre-line text-[15px] leading-7 text-slate-700">{post.content}</p>
 
       {post.media_url && post.media_type === 'image' && (
-        <Image
-          src={post.media_url}
-          alt="Post media"
-          width={1200}
-          height={900}
-          className="mt-4 w-full max-h-96 object-cover rounded-2xl border"
-        />
+        <div className="mt-5 overflow-hidden rounded-[28px] border border-slate-200/80 bg-slate-100">
+          <Image
+            src={post.media_url}
+            alt="Post media"
+            width={1200}
+            height={900}
+            className="max-h-[30rem] w-full object-cover transition duration-300 group-hover:scale-[1.01]"
+          />
+        </div>
       )}
 
       {post.media_url && post.media_type === 'video' && (
-        <video
-          src={post.media_url}
-          className="mt-4 w-full max-h-96 rounded-2xl border"
-          controls
-        />
+        <div className="mt-5 overflow-hidden rounded-[28px] border border-slate-200/80 bg-slate-950">
+          <video
+            src={post.media_url}
+            className="max-h-[30rem] w-full"
+            controls
+          />
+        </div>
       )}
 
-      <div className="mt-4 flex items-center justify-between">
-        <div className="flex items-center gap-4 text-sm text-slate-500">
+      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+        <div className="flex items-center gap-3 text-sm text-slate-500">
           <LikeButton postId={post.id} initialLiked={!!post.liked} initialCount={post.like_count} />
-          <Link href={`/posts/${post.id}`} className="hover:text-brand-600">
-            {post.comment_count} comments
+          <Link
+            href={`/posts/${post.id}`}
+            className="inline-flex items-center gap-2 rounded-full px-3 py-2 transition hover:bg-slate-100 hover:text-indigo-700"
+          >
+            <span>Comment</span>
+            <span className="text-xs text-slate-400">{post.comment_count}</span>
           </Link>
         </div>
 
         {showActions && user?.id === post.user_id && (
           <div className="flex items-center gap-3 text-sm">
-            <Link href={`/posts/${post.id}/edit`} className="hover:text-brand-600">Edit</Link>
+            <Link href={`/posts/${post.id}/edit`} className="font-medium text-slate-500 hover:text-indigo-700">Edit</Link>
             <button onClick={handleDelete} className="text-rose-500 hover:text-rose-600">Delete</button>
           </div>
         )}

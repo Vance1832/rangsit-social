@@ -38,7 +38,7 @@ export default function FeedList({ filterUserId }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       {posts.map((post) => (
         <PostCard key={post.id} post={post} onDeleted={handleDeleted} />
       ))}

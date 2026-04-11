@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from './Providers';
 
-export default function FollowButton({ targetId, initialFollowing }) {
+export default function FollowButton({ targetId, initialFollowing, onChange }) {
   const { user } = useAuth();
   const router = useRouter();
   const [following, setFollowing] = useState(initialFollowing);
@@ -24,6 +24,7 @@ export default function FollowButton({ targetId, initialFollowing }) {
     if (res.ok) {
       const data = await res.json();
       setFollowing(data.following);
+      onChange?.(data.following);
     }
     setLoading(false);
   }

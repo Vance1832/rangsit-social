@@ -4,11 +4,30 @@
 
 :root {
   color-scheme: light;
+  --bg: #f3f6fb;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-strong: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --line: rgba(148, 163, 184, 0.24);
+  --brand-navy: #0f172a;
+  --brand-indigo: #3730a3;
+  --brand-cyan: #0891b2;
+  --brand-pink: #db2777;
+}
+
+html {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(217, 70, 239, 0.08), transparent 24%),
+    linear-gradient(180deg, #eef4ff 0%, #f8fafc 48%, #eff4fb 100%);
 }
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply text-slate-900;
   font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: transparent;
 }
 
 .container {
@@ -20,29 +39,41 @@ body {
 }
 
 .btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition;
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200;
 }
 
 .btn-primary {
-  @apply bg-brand-600 text-white hover:bg-brand-700 shadow;
+  @apply bg-gradient-to-r from-indigo-700 via-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-950/20 hover:shadow-xl hover:shadow-indigo-950/25;
 }
 
 .btn-outline {
-  @apply border border-slate-200 text-slate-700 hover:border-brand-300 hover:text-brand-600 bg-white;
+  @apply border border-slate-200/80 bg-white/85 text-slate-700 backdrop-blur hover:border-indigo-300 hover:text-indigo-700;
 }
 
 .card {
-  @apply bg-white rounded-2xl shadow-card border border-slate-100;
+  @apply rounded-[28px] border border-white/60 bg-white/80 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl;
 }
 
 .input {
-  @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-200;
+  @apply w-full rounded-2xl border border-slate-200/90 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-200;
 }
 
 .textarea {
-  @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-200 min-h-[120px];
+  @apply min-h-[120px] w-full rounded-2xl border border-slate-200/90 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-200;
 }
 
 .badge {
-  @apply inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-700 px-3 py-1 text-xs font-medium;
+  @apply inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700;
+}
+
+.glass-panel {
+  @apply rounded-[32px] border border-white/60 bg-white/70 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl;
+}
+
+.metric-link {
+  @apply inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-indigo-300 hover:text-indigo-700;
+}
+
+.section-title {
+  @apply text-xl font-semibold tracking-tight text-slate-950;
 }

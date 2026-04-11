@@ -25,9 +25,15 @@ export default function LikeButton({ postId, initialLiked, initialCount }) {
   }
 
   return (
-    <button onClick={toggleLike} className={`flex items-center gap-1 ${liked ? 'text-brand-600' : ''}`}>
+    <button
+      onClick={toggleLike}
+      className={`inline-flex items-center gap-2 rounded-full px-3 py-2 transition ${
+        liked ? 'bg-rose-50 text-rose-600' : 'hover:bg-slate-100'
+      }`}
+    >
       <span>{liked ? '❤️' : '🤍'}</span>
-      <span>{count}</span>
+      <span>{liked ? 'Liked' : 'Like'}</span>
+      <span className="text-xs text-slate-400">{count}</span>
     </button>
   );
 }

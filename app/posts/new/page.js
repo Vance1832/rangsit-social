@@ -23,9 +23,12 @@ export default function NewPostPage() {
   return (
     <RouteGuard requireProfile>
       <div className="space-y-6">
-        <div className="card p-6">
-          <h1 className="text-2xl font-semibold">Create a post</h1>
-          <p className="text-sm text-slate-500 mt-2">Share a moment with your campus.</p>
+        <div className="glass-panel p-6 md:p-7">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">Create</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Share something worth seeing</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
+            Post an update, event, or idea to the campus feed. Add one image or video when the story needs it.
+          </p>
         </div>
         <PostForm submitLabel="Publish" onSubmit={handleSubmit} />
       </div>

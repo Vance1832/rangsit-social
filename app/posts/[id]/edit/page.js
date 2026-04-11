@@ -40,9 +40,12 @@ export default function EditPostPage() {
   return (
     <RouteGuard requireProfile>
       <div className="space-y-6">
-        <div className="card p-6">
-          <h1 className="text-2xl font-semibold">Edit post</h1>
-          <p className="text-sm text-slate-500 mt-2">Polish your message before sharing again.</p>
+        <div className="glass-panel p-6 md:p-7">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">Edit</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Refine your post</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
+            Update the message, replace the media, or remove it entirely before publishing the revised version.
+          </p>
         </div>
         <PostForm submitLabel="Update" onSubmit={handleSubmit} initial={post} />
       </div>

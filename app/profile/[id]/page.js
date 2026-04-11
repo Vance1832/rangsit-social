@@ -33,9 +33,15 @@ export default function ProfilePage() {
 
   return (
     <RouteGuard requireProfile>
-      <div className="space-y-6">
+      <div className="space-y-8">
         <ProfileHeader user={profile} stats={stats} />
-        <div className="space-y-6">
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="section-title">Posts</h2>
+            <p className="text-sm text-slate-400">{posts.length} shared</p>
+          </div>
+        </section>
+        <div className="space-y-7">
           {posts.length ? (
             posts.map((post) => <PostCard key={post.id} post={post} />)
           ) : (

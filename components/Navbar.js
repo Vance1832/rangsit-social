@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import BrandLogo from './BrandLogo';
 import { useAuth } from './Providers';
 
 function displayName(user) {
@@ -22,19 +23,21 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-100 bg-white/90 backdrop-blur">
-      <div className="container flex items-center justify-between py-4">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-bold">
-            RS
+    <header className="sticky top-0 z-30 border-b border-white/40 bg-white/60 backdrop-blur-2xl">
+      <div className="container flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center justify-between gap-4">
+          <BrandLogo />
+          <div className="hidden rounded-full border border-indigo-100 bg-indigo-50/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-indigo-700 md:inline-flex">
+            Campus Social
           </div>
-          <div>
-            <p className="text-lg font-semibold">Rangsit Social</p>
-            <p className="text-xs text-slate-500">Connect your campus life</p>
-          </div>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Link href="/feed" className="text-sm font-medium text-slate-600 hover:text-brand-600">Feed</Link>
+        </div>
+        <nav className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/feed"
+            className="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-white/80 hover:text-indigo-700"
+          >
+            Feed
+          </Link>
           {user && user.profile_completed && (
             <Link href="/posts/new" className="btn btn-primary">
               New Post
@@ -48,7 +51,10 @@ export default function Navbar() {
           )}
           {!loading && user && (
             <div className="flex items-center gap-3">
-              <Link href={user.profile_completed ? `/profile/${user.id}` : '/onboarding'} className="flex items-center gap-2">
+              <Link
+                href={user.profile_completed ? `/profile/${user.id}` : '/onboarding'}
+                className="flex items-center gap-3 rounded-full border border-slate-200/80 bg-white/80 px-2 py-1 pr-4 shadow-sm backdrop-blur"
+              >
                 {user.avatar ? (
                   <Image
                     src={user.avatar}
@@ -62,9 +68,16 @@ export default function Navbar() {
                     {displayName(user).slice(0, 1).toUpperCase()}
                   </div>
                 )}
-                <span className="text-sm font-medium">{displayName(user)}</span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-slate-900">{displayName(user)}</p>
+                  <p className="truncate text-xs text-slate-500">
+                    {user.profile_completed ? `@${user.username || 'student'}` : 'Finish profile'}
+                  </p>
+                </div>
               </Link>
-              <button onClick={handleLogout} className="text-sm text-slate-500 hover:text-brand-600">Logout</button>
+              <button onClick={handleLogout} className="text-sm font-medium text-slate-500 hover:text-indigo-700">
+                Logout
+              </button>
             </div>
           )}
         </nav>

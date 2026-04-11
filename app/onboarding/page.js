@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import BrandLogo from '@/components/BrandLogo';
 import RouteGuard from '@/components/RouteGuard';
 import { useAuth } from '@/components/Providers';
 import { uploadProfileImage } from '@/utils/upload-client';
@@ -80,18 +81,37 @@ export default function OnboardingPage() {
 
   return (
     <RouteGuard onboardingOnly>
-      <div className="space-y-6">
-        <div className="card p-6">
-          <h1 className="text-2xl font-semibold">Complete your profile</h1>
-          <p className="text-sm text-slate-500 mt-2">
-            Tell your campus community who you are.
-          </p>
-        </div>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.25fr)] lg:items-start">
+        <section className="glass-panel overflow-hidden p-0">
+          <div className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-8 text-white">
+            <BrandLogo compact />
+            <p className="mt-8 text-xs font-semibold uppercase tracking-[0.26em] text-cyan-200">
+              Onboarding
+            </p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+              Build a profile people will recognize.
+            </h1>
+            <p className="mt-3 max-w-md text-sm leading-7 text-slate-300">
+              Add your name, username, birthday, bio, and profile image. This is what other students will see
+              across the feed, comments, and follow lists.
+            </p>
+          </div>
+          <div className="grid gap-4 p-6 text-sm text-slate-600">
+            <div className="rounded-[24px] border border-slate-200/80 bg-white/80 p-4">
+              <p className="font-semibold text-slate-950">What you can add now</p>
+              <p className="mt-1 leading-6">A complete identity that carries across your posts and profile.</p>
+            </div>
+            <div className="rounded-[24px] border border-slate-200/80 bg-white/80 p-4">
+              <p className="font-semibold text-slate-950">Profile image rule</p>
+              <p className="mt-1 leading-6">Image files only. Video is blocked here by design.</p>
+            </div>
+          </div>
+        </section>
 
-        <form onSubmit={handleSubmit} className="card p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="glass-panel space-y-5 p-6 md:p-8">
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="text-sm font-medium">First name</label>
+              <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">First name</label>
               <input
                 className="input mt-2"
                 value={form.firstName}
@@ -100,7 +120,7 @@ export default function OnboardingPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Last name</label>
+              <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Last name</label>
               <input
                 className="input mt-2"
                 value={form.lastName}
@@ -111,7 +131,7 @@ export default function OnboardingPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium">Username</label>
+            <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Username</label>
             <input
               className="input mt-2"
               value={form.username}
@@ -121,7 +141,7 @@ export default function OnboardingPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium">Birthday</label>
+            <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Birthday</label>
             <input
               className="input mt-2"
               type="date"
@@ -132,17 +152,23 @@ export default function OnboardingPage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium">Bio</label>
+            <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Bio</label>
             <textarea
               className="textarea mt-2"
               value={form.bio}
               onChange={(e) => updateField('bio', e.target.value)}
-              placeholder="Share a short intro..."
+              placeholder="Tell other students what you study, create, or care about."
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Profile photo</label>
+          <div className="rounded-[28px] border border-dashed border-slate-300/80 bg-slate-50/80 p-5">
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div>
+                <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Profile photo</label>
+                <p className="mt-1 text-sm text-slate-500">Upload a clear image from your device.</p>
+              </div>
+              <span className="badge">Image only</span>
+            </div>
             <input
               className="input mt-2"
               type="file"
@@ -151,19 +177,30 @@ export default function OnboardingPage() {
               required
             />
             {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="Profile preview"
-                className="mt-3 h-24 w-24 rounded-2xl object-cover border"
-              />
+              <div className="mt-4 flex items-center gap-4 rounded-[24px] border border-slate-200 bg-white p-4">
+                <img
+                  src={previewUrl}
+                  alt="Profile preview"
+                  className="h-24 w-24 rounded-[24px] border border-slate-200 object-cover"
+                />
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Preview</p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    This image will be used in your feed posts, comments, and profile header.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
 
           {error && <p className="text-sm text-rose-500">{error}</p>}
 
-          <button className="btn btn-primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Finish setup'}
-          </button>
+          <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-2">
+            <p className="text-xs text-slate-400">You can update your profile later by extending the profile settings flow.</p>
+            <button className="btn btn-primary" disabled={loading}>
+              {loading ? 'Saving...' : 'Finish setup'}
+            </button>
+          </div>
         </form>
       </div>
     </RouteGuard>

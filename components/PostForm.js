@@ -67,42 +67,68 @@ export default function PostForm({ initial = { content: '', media_url: null, med
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card p-6 space-y-4">
-      <div>
-        <label className="text-sm font-medium">Post content</label>
+    <form onSubmit={handleSubmit} className="glass-panel space-y-6 p-6 md:p-7">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-4">
+          <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Post content</label>
+          <span className="text-xs text-slate-400">{content.length}/5000</span>
+        </div>
         <textarea
           className="textarea mt-2"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Share something with your campus..."
+          placeholder="What is happening around campus today?"
           required
         />
       </div>
-      <div>
-        <label className="text-sm font-medium">Media (optional)</label>
+
+      <div className="rounded-[28px] border border-dashed border-slate-300/80 bg-slate-50/80 p-5">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <label className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Media upload</label>
+            <p className="mt-1 text-sm text-slate-500">
+              Add one image or video. This keeps the composer simple and reliable for the demo.
+            </p>
+          </div>
+          <span className="badge">Image or video</span>
+        </div>
         <input
-          className="input mt-2"
+          className="input mt-4"
           type="file"
           accept="image/*,video/*"
           onChange={handleFileChange}
         />
         {previewUrl && (
-          <div className="mt-3 space-y-2">
+          <div className="mt-4 space-y-3">
             {previewType === 'video' ? (
-              <video src={previewUrl} className="w-full max-h-96 rounded-2xl border" controls />
+              <video
+                src={previewUrl}
+                className="w-full max-h-96 rounded-[24px] border border-slate-200 bg-slate-950"
+                controls
+              />
             ) : (
-              <img src={previewUrl} alt="Preview" className="w-full max-h-96 object-cover rounded-2xl border" />
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full max-h-96 rounded-[24px] border border-slate-200 object-cover"
+              />
             )}
-            <button type="button" onClick={handleRemoveMedia} className="text-sm text-rose-500">
+            <button type="button" onClick={handleRemoveMedia} className="text-sm font-medium text-rose-500">
               Remove media
             </button>
           </div>
         )}
       </div>
+
       {error && <p className="text-sm text-rose-500">{error}</p>}
-      <button type="submit" className="btn btn-primary" disabled={loading}>
-        {loading ? 'Saving...' : submitLabel}
-      </button>
+      <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-2">
+        <p className="text-xs text-slate-400">
+          Your post will appear in the campus feed as soon as it is published.
+        </p>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? 'Saving...' : submitLabel}
+        </button>
+      </div>
     </form>
   );
 }
