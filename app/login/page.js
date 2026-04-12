@@ -35,10 +35,17 @@ export default function LoginPage() {
       const data = await res.json();
       setUser(data.user);
       await refresh();
+      const nextPath = typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('next')
+        : null;
+      const destination = data.user.profile_completed ? (nextPath || '/feed') : '/onboarding';
+
+      if (typeof window !== 'undefined') {
+        window.location.replace(destination);
+        return;
+      }
+
       if (data.user.profile_completed) {
-        const nextPath = typeof window !== 'undefined'
-          ? new URLSearchParams(window.location.search).get('next')
-          : null;
         router.replace(nextPath || '/feed');
       } else {
         router.replace('/onboarding');
