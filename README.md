@@ -1,4 +1,5 @@
 # Rangsit Social
+### Modern Campus Social Media Platform
 
 A production-style university social media web app built with Next.js 15, React 19, MySQL, Tailwind CSS, and JWT auth.
 
